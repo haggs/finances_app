@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <title>Finance App Sign Up</title>
+        <link rel="stylesheet" href="/static/css/build/vendor.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <script src="/static/scripts/build/vendor.js"></script>
+        <script src="/static/scripts/main.js"></script>
+    </head>
+    <body>
+        <div class="parent">
+            <div class="centered-card">
+                <h1>Sign Up</h1>
+                {{ form.errors }}
+                <form method="post" action="/register/">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <span class="input-group-addon">First Name:</span>
+                        <input class="form-control" id="id_first_name" name="first_name" type="text">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">Last Name:</span>
+                        <input class="form-control" id="id_last_name" name="last_name" type="text">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">Email:</span>
+                        <input class="form-control" id="id_email" name="email" type="text">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">Password:</span>
+                        <input class="form-control" id="id_password" name="password" type="password">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">Password Confirm:</span>
+                        <input class="form-control" id="id_password_confirm" name="password_confirm" type="password">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">Signup Key:</span>
+                        <input class="form-control" id="id_signup_key" name="signup_key" type="text" maxlength="10">
+                    </div>
+                    <br>
+                    <input class="btn btn-primary" type="submit" value="Sign Up">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
