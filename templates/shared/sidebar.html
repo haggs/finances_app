@@ -1,0 +1,27 @@
+<div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav side-nav">
+                <li class="active">
+                    <a href=/{{ this_month.id }}><i class="fa fa-fw fa-calendar"></i> Current Month</a>
+                </li>
+
+                {% for element in sidebar_elements %}
+                    {% if element.type == 'year' %}
+                        <div style="padding: 10px 0px 10px 0px"><b>{{ element.label }}</b></div>
+                    {% elif element.type == 'month' %}
+                        <li>
+                            <a href="/{{ element.id }}">{{ element.label }}</a>
+                        </li>
+
+
+                    {% endif %}
+                {% endfor %}
+                <li>
+                    <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-plus"></i> Year <i class="fa fa-fw fa-caret-down"></i></a>
+                    <ul id="demo" class="collapse">
+                        <li>
+                            <a href="#">Month - 6</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>

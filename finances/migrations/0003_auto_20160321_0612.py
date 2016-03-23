@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
-from ..models import Period
+from ..models import IncomeType
 from datetime import datetime
 from ..helpers import get_period
 
