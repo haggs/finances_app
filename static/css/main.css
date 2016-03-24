@@ -27,3 +27,16 @@
     background-color: darkgreen;
     box-shadow: none;
 }
+
+.panel, .panel-default {
+    box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, .2);
+}
+
+.trash {
+    float: right;
+}
+
+.trash:hover {
+    color: blue;
+    cursor: pointer;
+}

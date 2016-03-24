@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth import login
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import ensure_csrf_cookie
 from datetime import datetime
-from .models import Expense, Period
+from .models import Expense, Period, UserProfile, Category
 from .helpers import get_period, get_dashboard
 
 
@@ -43,6 +44,32 @@ def view_dashboard(request, period_id=None):
            }
 
     return render(request, 'finances/dashboard.html', data)
+
+
+@login_required
+@ensure_csrf_cookie
+def view_preferences(request):
+    profile = UserProfile.objects.get(account=request.user)
+
+    if request.method == 'POST':
+        if 'action' not in request.POST:
+            return JsonResponse({'success': True})
+        if request.POST['action'] == 'delete_default_bill':
+            bill = Category.objects.get(id=request.POST['id'])
+            profile.default_categories.remove(bill)
+            return JsonResponse({'success': True})
+        if request.POST['action'] == 'add_default_bill':
+            bill = Category.objects.get(id=request.POST['id'])
+            profile.default_categories.add(bill)
+            return JsonResponse({'success': True})
+
+    data = {
+        'profile': profile,
+        'bills': Category.objects.filter(is_bill=True).order_by('id'),
+    }
+
+    return render(request, 'finances/preferences.html', data)
+
 
 @login_required
 def add_expense(request):

@@ -76,6 +76,9 @@ class UserProfile(models.Model):
     hourly_income = models.FloatField(default=0.0)
     monthly_income = models.FloatField(default=0.0)
 
+    def __unicode__(self):
+        return self.account.get_full_name()
+
 
 @receiver(post_save, sender=Account)
 def create_userprofile_on_account_create(**kwargs):

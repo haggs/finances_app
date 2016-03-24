@@ -19,9 +19,10 @@ import views
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import login, logout
-from views import home, view_dashboard
+from views import home, view_dashboard, view_preferences
 
 urlpatterns = [
     url(r'^$', home),
-    url(r'(?P<period_id>\d+)/$', view_dashboard)
+    url(r'(?P<period_id>\d+)/$', view_dashboard),
+    url(r'^preferences/$', view_preferences),
 ]
