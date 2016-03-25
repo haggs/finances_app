@@ -4,8 +4,9 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
-from datetime import datetime
-from .models import Expense, Period, UserProfile, Category
+from django.db.models import Sum
+from datetime import datetime, timedelta
+from .models import Expense, Period, UserProfile, Category, Budget
 from .helpers import get_period, get_dashboard
 
 
@@ -17,8 +18,8 @@ def home(request):
 
 @login_required
 def view_dashboard(request, period_id=None):
-
-    dashboard = get_dashboard(period_id=period_id, account_id=request.user.id)
+    profile = UserProfile.objects.get(account=request.user)
+    dashboard = get_dashboard(period_id=period_id, profile_id=profile.id)
     expenses = Expense.objects.filter(dashboard=dashboard)
     periods = Period.objects.order_by('-start_date')
 
@@ -28,6 +29,7 @@ def view_dashboard(request, period_id=None):
 
     current_year = this_month.start_date.year
 
+    # Get periods used by sidebar
     for period in periods:
         if period == this_month:
             continue
@@ -36,11 +38,25 @@ def view_dashboard(request, period_id=None):
             current_year = period.start_date.year
         sidebar_elements.append({'type': 'month', 'label': period.month, 'id': period.id})
 
+    bills = expenses.filter(category__is_bill=True)
+    budgets = Budget.objects.filter(dashboard=dashboard)
+
+    expense_table = {}
+    current_date = this_month.start_date
+    while current_date <= this_month.end_date:
+        expense_table[current_date] = {'name': current_date.strftime("%-m/%-d")}
+        current_date += timedelta(days=1)
+
     data = {'dashboard': dashboard,
             'expenses': expenses,
+            'bills': bills,
+            'budgets': budgets,
             'periods': periods,
             'this_month': this_month,
-            'sidebar_elements': sidebar_elements
+            'sidebar_elements': sidebar_elements,
+            'total_bills': bills.aggregate(Sum('amount')).get('amount__sum'),
+            'total_budgets': budgets.aggregate(Sum('amount')).get('amount_sum'),
+            'expense_table': expense_table
            }
 
     return render(request, 'finances/dashboard.html', data)

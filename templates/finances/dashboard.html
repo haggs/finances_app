@@ -1,161 +1,377 @@
 {% include 'shared/header.html' %}
-<div id="page-wrapper">
-    <div class="container-fluid">
+<div>
+    <div class="container-fluid dashboard-container">
+
         <!-- Page Heading -->
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">
-                    <small>{{ dashboard.period.name }}</small>
-                </h1>
+                <h1>{{ dashboard.period.name }}</h1>
+                <br>
             </div>
         </div>
-        <!-- /.row -->
+
+        <!-- Page body -->
         <div class="row">
-            <div class="col-lg-3 text-center">
-                <div class="row">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><i class="fa fa-pie-chart fa-fw"></i>Income</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <tr>
-                                        <th>
 
-                                        </th>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- First Column-->
+            <div class="col-lg-2">
 
-                <div class="row">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><i class="fa fa-pie-chart fa-fw"></i>Bills</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover ">
-                                    {% for expense in expense %}
-                                        {% if expense.category.is_bill %}
-                                            <tr>
-                                                <th>{{ expense.category.name }}</th>
-                                                <td>$ {{ expense.amount }}</td>
-                                                <td><button id="delete_bill" data-expense-id="{{ expense.id }}">Delete</button></td>
-                                            </tr>
-                                        {% endif %}
-                                    {% endfor %}
-                                    <tr>
-                                        <th>Total Bills</th>
-                                        <th>$ 120.00</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Cash After Bills</th>
-                                        <th>$ 10,000.00</th>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><i class="fa fa-pie-chart fa-fw"></i>Budgets</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Date</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for expense in expenses %}
-                                        {% if expense.category.is_bill %}
-                                            <tr>
-                                                <td><b>{{ expense.category.name }}</b></td>
-                                                <td>12/12/12</td>
-                                                <td>${{ expense.amount }}</td>
-                                            </tr>
-                                        {% endif %}
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-8 text-center">
+                <!-- Income -->
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        .col-lg-4
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-6 col-sm-6">
-                <button id="new_expense" type="button" class="btn-new-expense" data-toggle="modal" data-target="#myModal">
-                    <i class="fa fa-2x fa-plus"></i>
-                </button>
-
-                <!-- Modal -->
-                <div class="modal fade" id="myModal" role="dialog">
-                    <div class="modal-dialog">
-
-                        <!-- Modal content-->
-                        <div class="modal-content">
-                            <div class="modal-header alert-primary">
-                                <button id="cancel_new_expense2" type="button" class="close">&times;</button>
-                                <h4 class="modal-title "><i class="fa fa-money"></i>New Expense</h4>
-                            </div>
-                            <div class="modal-body">
-                                {% csrf_token %}
-                                <div class="form-group input-group">
-                                    <span class="input-group-addon"><i class="fa fa-usd fa-fw"></i></span>
-                                    <input id="new_expense_amount" type="text" class="form-control" placeholder="Amount">
-                                </div>
-                                <div class="form-group input-group">
-                                    <span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
-                                    <input id="new_expense_date" type="date" class="form-control" name="transaction-date">
-                                </div>
-                                <div class="form-group">
-                                    <select id="new_expense_category" class="form-control" placeholder="Category">
-                                        <option selected>Select Category...</option>
-                                        <option>Bills & Utilities</option>
-                                        <option>Marijuana</option>
-                                        <option>Bars & Restaurants</option>
-                                        <option>Fuel & Cars</option>
-                                        <option>Groceries</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <textarea id="new_expense_description" class="form-control" rows="5" maxlength="100" placeholder="Description" style="resize:none"></textarea>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button id="cancel_new_expense" type="button" class="btn btn-default">Cancel</button>
-                                <button id="submit_new_expense" type="submit" class="btn btn-success">Add</button>
-                            </div>
+                        <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>Income</h3>
+                        
+                        <div>
+                            <table class="table">
+                                <tr>
+                                    <th style="display:table-cell; vertical-align:middle; width: 30%">Net Monthly Income</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">$</span>
+                                            <input id="bill_{{ bill.id }}" type="text" class="form-control" value="{{ dashboard.net_income|floatformat:2 }}">
+                                            <span class="input-group-addon"><i class="fa fa-calculator fa-2 clickable"></i></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
+                    </div>
+                </div>
 
+                <!-- Bills -->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>Bills</h3>
+                        <br>
+                        <table class="table">
+                            {%  for bill in bills %}
+                                <tr>
+                                    <th style="display:table-cell; vertical-align:middle; width: 50%">{{ bill.category.name }}</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">$</span>
+                                            <input id="bill_{{ bill.id }}" type="text" class="form-control" value="{{ bill.amount|floatformat:2 }}">
+                                        </div>
+                                    </td>
+                                    <th style="display:table-cell; vertical-align:middle;">
+                                        <i id="delete_bill_{{ bill.id }}" class="fa fa-trash fa-2 clickable"></i>
+                                    </th>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <th style="width: 50%"><input class="form-control" type="text" placeholder="Add Bill"></th>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </td>
+                                <th style="display:table-cell; vertical-align:middle;">
+                                    <i style="color:green" class="fa fa-plus-circle fa-2 clickable"></i>
+                                </th>
+                            </tr>
+                            <tr style="border-top: 2px solid black">
+                                <th style="display:table-cell; vertical-align:middle; width: 50%">Total Bills</th>
+                                <th style="float: right">$ {{ total_bills|floatformat:2 }}</th>
+                                <th style="display:table-cell; vertical-align:middle;">
+                                    <i style="color: blue" class="fa fa-refresh fa-2 clickable"></i>
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+
+                <!-- Budgets -->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>Budgets</h3>
+                        <br>
+                        <table class="table">
+                            {%  for budget in budgets %}
+                                <tr>
+                                    <th style="display:table-cell; vertical-align:middle; width: 50%">{{ budget.category.name }}</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">$</span>
+                                            <input id="bill_{{ bill.id }}" type="text" class="form-control" value="{{ budget.amount|floatformat:2 }}">
+                                        </div>
+                                    </td>
+                                    <th style="display:table-cell; vertical-align:middle;">
+                                        <i id="delete_bill_{{ bill.id }}" class="fa fa-trash fa-2 clickable"></i>
+                                    </th>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <th style="width: 50%"><input class="form-control" type="text" placeholder="Add Budget"></th>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </td>
+                                <th style="display:table-cell; vertical-align:middle;">
+                                    <i style="color:green" class="fa fa-plus-circle fa-2 clickable"></i>
+                                </th>
+                            </tr>
+                            <tr style="border-top: 2px solid black">
+                                <th style="display:table-cell; vertical-align:middle; width: 50%">Total Budgets</th>
+                                <th style="float: right">$ {{ total_budgets|floatformat:2 }}</th>
+                                <th style="display:table-cell; vertical-align:middle;">
+                                    <i style="color: blue" class="fa fa-refresh fa-2 clickable"></i>
+                                </th>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
+
+            <!-- Second Column-->
+            <div class="col-lg-2">
+                <!-- Income -->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>Statistics</h3>
+                        <br>
+                        <div>
+                            <table class="table">
+                                <tr>
+                                    <th style="display:table-cell; vertical-align:middle;">Expected Cash Saved</th>
+                                    <th style="float: right">$ {{ dashboard.expected_cash_saved|floatformat:2 }}</th>
+                                </tr>
+                                <tr>
+                                    <th style="color: gray; display:table-cell; vertical-align:middle;">Interpolated Cash Saved</th>
+                                    <th style="float: right">$ {{ dashboard.interpolated_cash_saved|floatformat:2 }}</th>
+                                </tr>
+                                <tr>
+                                    <th style="display:table-cell; vertical-align:middle;">Actual Cash Saved</th>
+                                    <th style="float: right">$ {{ dashboard.actual_cash_saved|floatformat:2 }}</th>
+                                </tr>
+                                <tr>
+                                    <th style="display:table-cell; vertical-align:middle;">Average Cash Spent Per Day</th>
+                                    <th style="float: right">$ {{ dashboard.avg_cash_spent_per_day|floatformat:2 }}</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Third Column -->
+            <div class="col-lg-8">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>Expenses  <i class="fa fa-refresh fa-2 clickable"></i></h3>
+                        <br>
+                        <div>
+                            <table class="table table-bordered table-hover table-striped">
+                                <tr style="border-bottom: 2px solid gray">
+                                    <th style="border-right: 2px solid gray"></th>
+                                    <th>Restaurants & Bars</th>
+                                    <th>Gas & Car Costs</th>
+                                    <th>Groceries</th>
+                                    <th>Misc.</th>
+                                    <th style="border-left: 2px solid gray">Totals</th>
+                                </tr>
+                                {% for date, row in expense_table.items %}
+                                <tr>
+                                    <th style="border-right: 2px solid black"><span style="float:right">{{ row.name }}</span></th>
+                                    <td>0.00</td>
+                                    <td>0.00</td>
+                                    <td>0.00</td>
+                                    <td>0.00</td>
+                                    <th style="border-left: 2px solid black;">0.00</th>
+                                </tr>
+                                {% endfor %}
+                                <tr style="border-top: 2px solid gray">
+                                    <th style="border-right: 2px solid black">Totals</th>
+                                    <th>0.00</th>
+                                    <th>0.00</th>
+                                    <th>0.00</th>
+                                    <th>0.00</th>
+                                    <th style="border-left: 2px solid black;">0.00</th>
+                                </tr>
+                                <tr>
+                                    <th style="border-right: 2px solid black">Budget Left</th>
+                                    <th>0.00</th>
+                                    <th>0.00</th>
+                                    <th>0.00</th>
+                                    <th>0.00</th>
+                                    <th style="border-left: 2px solid black;">0.00</th>
+                                </tr>
+                                <tr>
+                                    <th style="border-right: 2px solid black"></th>
+                                    <th>Restaurants & Bars</th>
+                                    <th>Gas & Car Costs</th>
+                                    <th>Groceries</th>
+                                    <th>Misc.</th>
+                                    <th style="border-left: 2px solid black;">Total</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-    <!-- /.container-fluid -->
 </div>
+
+
+
+
+
+
+
+
+
+{#        <!-- /.row -->#}
+{#        <div class="row">#}
+{#            <div class="col-lg-3 text-center">#}
+{#                <div class="row">#}
+{#                    <div class="panel panel-default">#}
+{#                        <div class="panel-heading">#}
+{#                            <h3 class="panel-title"><i class="fa fa-pie-chart fa-fw"></i>Income</h3>#}
+{#                        </div>#}
+{#                        <div class="panel-body">#}
+{#                            <div class="table-responsive">#}
+{#                                <table class="table table-bordered table-hover">#}
+{#                                    <tr>#}
+{#                                        <th>#}
+{##}
+{#                                        </th>#}
+{#                                    </tr>#}
+{#                                </table>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#                <div class="row">#}
+{#                    <div class="panel panel-default">#}
+{#                        <div class="panel-heading">#}
+{#                            <h3 class="panel-title"><i class="fa fa-pie-chart fa-fw"></i>Bills</h3>#}
+{#                        </div>#}
+{#                        <div class="panel-body">#}
+{#                            <div class="table-responsive">#}
+{#                                <table class="table table-bordered table-hover ">#}
+{#                                    {% for expense in expense %}#}
+{#                                        {% if expense.category.is_bill %}#}
+{#                                            <tr>#}
+{#                                                <th>{{ expense.category.name }}</th>#}
+{#                                                <td>$ {{ expense.amount }}</td>#}
+{#                                                <td><button id="delete_bill" data-expense-id="{{ expense.id }}">Delete</button></td>#}
+{#                                            </tr>#}
+{#                                        {% endif %}#}
+{#                                    {% endfor %}#}
+{#                                    <tr>#}
+{#                                        <th>Total Bills</th>#}
+{#                                        <th>$ 120.00</th>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <th>Cash After Bills</th>#}
+{#                                        <th>$ 10,000.00</th>#}
+{#                                    </tr>#}
+{#                                </table>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#                <div class="row">#}
+{#                    <div class="panel panel-default">#}
+{#                        <div class="panel-heading">#}
+{#                            <h3 class="panel-title"><i class="fa fa-pie-chart fa-fw"></i>Budgets</h3>#}
+{#                        </div>#}
+{#                        <div class="panel-body">#}
+{#                            <div class="table-responsive">#}
+{#                                <table class="table table-bordered table-hover table-striped">#}
+{#                                    <thead>#}
+{#                                    <tr>#}
+{#                                        <th>Category</th>#}
+{#                                        <th>Date</th>#}
+{#                                        <th>Amount</th>#}
+{#                                    </tr>#}
+{#                                    </thead>#}
+{#                                    <tbody>#}
+{#                                    {% for expense in expenses %}#}
+{#                                        {% if expense.category.is_bill %}#}
+{#                                            <tr>#}
+{#                                                <td><b>{{ expense.category.name }}</b></td>#}
+{#                                                <td>12/12/12</td>#}
+{#                                                <td>${{ expense.amount }}</td>#}
+{#                                            </tr>#}
+{#                                        {% endif %}#}
+{#                                    {% endfor %}#}
+{#                                    </tbody>#}
+{#                                </table>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{##}
+{#            <div class="col-lg-8 text-center">#}
+{#                <div class="panel panel-default">#}
+{#                    <div class="panel-body">#}
+{#                        .col-lg-4#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="row">#}
+{#            <div class="col-xs-6 col-sm-6">#}
+{#                <button id="new_expense" type="button" class="btn-new-expense" data-toggle="modal" data-target="#myModal">#}
+{#                    <i class="fa fa-2x fa-plus"></i>#}
+{#                </button>#}
+{##}
+{#                <!-- Modal -->#}
+{#                <div class="modal fade" id="myModal" role="dialog">#}
+{#                    <div class="modal-dialog">#}
+{##}
+{#                        <!-- Modal content-->#}
+{#                        <div class="modal-content">#}
+{#                            <div class="modal-header alert-primary">#}
+{#                                <button id="cancel_new_expense2" type="button" class="close">&times;</button>#}
+{#                                <h4 class="modal-title "><i class="fa fa-money"></i>New Expense</h4>#}
+{#                            </div>#}
+{#                            <div class="modal-body">#}
+{#                                {% csrf_token %}#}
+{#                                <div class="form-group input-group">#}
+{#                                    <span class="input-group-addon"><i class="fa fa-usd fa-fw"></i></span>#}
+{#                                    <input id="new_expense_amount" type="text" class="form-control" placeholder="Amount">#}
+{#                                </div>#}
+{#                                <div class="form-group input-group">#}
+{#                                    <span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>#}
+{#                                    <input id="new_expense_date" type="date" class="form-control" name="transaction-date">#}
+{#                                </div>#}
+{#                                <div class="form-group">#}
+{#                                    <select id="new_expense_category" class="form-control" placeholder="Category">#}
+{#                                        <option selected>Select Category...</option>#}
+{#                                        <option>Bills & Utilities</option>#}
+{#                                        <option>Marijuana</option>#}
+{#                                        <option>Bars & Restaurants</option>#}
+{#                                        <option>Fuel & Cars</option>#}
+{#                                        <option>Groceries</option>#}
+{#                                    </select>#}
+{#                                </div>#}
+{#                                <div class="form-group">#}
+{#                                    <textarea id="new_expense_description" class="form-control" rows="5" maxlength="100" placeholder="Description" style="resize:none"></textarea>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="modal-footer">#}
+{#                                <button id="cancel_new_expense" type="button" class="btn btn-default">Cancel</button>#}
+{#                                <button id="submit_new_expense" type="submit" class="btn btn-success">Add</button>#}
+{#                            </div>#}
+{#                        </div>#}
+{##}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+
+<!-- /.container-fluid -->
 <!-- /#page-wrapper -->
 </div>
 {% include 'shared/footer.html' %}

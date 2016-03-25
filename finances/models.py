@@ -29,31 +29,6 @@ class Period(models.Model):
         return self.name()
 
 
-class Dashboard(models.Model):
-    account = models.ForeignKey(Account)
-    period = models.ForeignKey(Period)
-    net_income = models.FloatField(null=True)
-    expected_cash_saved = models.FloatField(null=True)
-    interpolated_cash_saved = models.FloatField(null=True)
-    actual_cash_saved = models.FloatField(null=True)
-    avg_cash_spent_per_day = models.FloatField(null=True)
-
-    def __unicode__(self):
-        return self.account.get_full_name() + ": " + self.period.name()
-
-
-class Expense(models.Model):
-    dashboard = models.ForeignKey(Dashboard)
-    category = models.ForeignKey(Category)
-    description = models.CharField(max_length=512)
-    amount = models.FloatField(default=0.00)
-    date = models.DateTimeField(auto_now_add=True)
-
-    def __unicode__(self):
-        return self.dashboard.account.get_full_name() + " " \
-               + str(self.amount) + " " + self.category.name + " " + self.date
-
-
 class IncomeType(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
 
@@ -78,6 +53,71 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return self.account.get_full_name()
+
+
+class Dashboard(models.Model):
+    profile = models.ForeignKey(UserProfile)
+    period = models.ForeignKey(Period)
+    net_income = models.FloatField(null=True)
+    net_hourly_pay = models.FloatField(default=0.0)
+    hours_worked = models.FloatField(default=0.0)
+    expected_cash_saved = models.FloatField(default=0.0, null=True)
+    interpolated_cash_saved = models.FloatField(default=0.0, null=True)
+    actual_cash_saved = models.FloatField(default=0.0, null=True)
+    avg_cash_spent_per_day = models.FloatField(default=0.0, null=True)
+
+    def __unicode__(self):
+        return self.account.get_full_name() + ": " + self.period.name()
+
+
+class Expense(models.Model):
+    dashboard = models.ForeignKey(Dashboard)
+    category = models.ForeignKey(Category)
+    description = models.CharField(max_length=512)
+    amount = models.FloatField(default=0.00)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return self.dashboard.account.get_full_name() + " " \
+               + str(self.amount) + " " + self.category.name + " " + self.date
+
+
+class Budget(models.Model):
+    dashboard = models.ForeignKey(Dashboard)
+    category = models.ForeignKey(Category)
+    amount = models.FloatField(default=0.0)
+    expenses = models.ManyToManyField(Expense)
+
+
+def get_num_hours_this_month(period=None):
+    return 12
+
+
+@receiver(post_save, sender=Dashboard)
+def add_default_bills_and_budgets_to_dashboard(**kwargs):
+    dashboard = kwargs.get('instance')
+    profile = dashboard.profile
+    created = kwargs.get('created')
+    if created:
+        # create bills (as expenses) for this dashboard
+        for category in profile.default_categories.filter(is_bill=True):
+            Expense.objects.create(dashboard=dashboard, category=category)
+
+        for category in profile.default_categories.filter(is_bill=False):
+            Budget.objects.create(dashboard=dashboard, category=category)
+
+        if profile.income_type.name == "hourly":
+            dashboard.hours_worked = get_num_hours_this_month(dashboard.period)
+            dashboard.net_hourly_pay = profile.hourly_income
+            dashboard.net_income = dashboard.net_hourly_pay * dashboard.hours_worked
+            dashboard.save()
+        else:
+            dashboard.net_income = profile.monthly_income
+            dashboard.save()
+
+
+        # if profile.income_type.name == "hourly":
+        #     dashboard.
 
 
 @receiver(post_save, sender=Account)

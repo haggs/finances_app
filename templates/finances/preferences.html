@@ -23,7 +23,7 @@
                                         <table id="default_bills_table" class="table table-bordered">
                                             {% for category in profile.default_categories.all %}{% if category.is_bill %}
                                                 <tr id="bill_{{ category.id }}">
-                                                    <th>{{ category.name }}<i id="delete_default_bill_{{ category.id }}" class="fa fa-trash fa-2 trash"></i></th>
+                                                    <th>{{ category.name }}<i id="delete_default_bill_{{ category.id }}" class="fa fa-trash fa-2 clickable"></i></th>
                                                 </tr>
                                             {% endif %}{% endfor %}
 

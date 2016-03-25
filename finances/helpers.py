@@ -21,14 +21,15 @@ def get_period(date=None):
             period.save()
             return period
 
-def get_dashboard(period_id=None, account_id=None):
-    if not (period_id or account_id):
+
+def get_dashboard(period_id=None, profile_id=None):
+    if not (period_id or profile_id):
         return None
     else:
-        dashboard = Dashboard.objects.filter(account_id=account_id, period_id=period_id)
+        dashboard = Dashboard.objects.filter(profile_id=profile_id, period_id=period_id)
         if dashboard.exists():
             return dashboard.get()
         else:
-            dashboard = Dashboard(account_id=account_id, period_id=period_id)
+            dashboard = Dashboard(profile_id=profile_id, period_id=period_id)
             dashboard.save()
             return dashboard
