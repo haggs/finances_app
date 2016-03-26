@@ -23,7 +23,31 @@ $(function () {
 $( document ).ready(function(){
 
 
+    $('body').on('click', '#general_button', function(){
+        $('.active').removeClass('active');
+        $(this).parent().addClass('active');
+        $('#general_page').removeClass('hidden');
+        $('#calendar_page').addClass('hidden');
+        $('#expenses_page').addClass('hidden');
+    });
 
+    $('body').on('click', '#calendar_button', function(){
+        $('.active').removeClass('active');
+        $(this).parent().addClass('active');
+
+        $('#calendar_page').removeClass('hidden');
+        $('#general_page').addClass('hidden');
+        $('#expenses_page').addClass('hidden');
+    });
+
+    $('body').on('click', '#expenses_button', function(){
+        $('.active').removeClass('active');
+        $(this).parent().addClass('active');
+
+        $('#expenses_page').removeClass('hidden');
+        $('#calendar_page').addClass('hidden');
+        $('#general_page').addClass('hidden');
+    });
 
     $('body').on('click', 'i[id^=delete_default_bill]', function(){
         var element = $(this);

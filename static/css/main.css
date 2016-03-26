@@ -26,3 +26,7 @@
     color: blue;
     cursor: pointer;
 }
+
+.general_page_card {
+    min-height: 600px;
+}

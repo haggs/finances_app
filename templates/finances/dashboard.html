@@ -4,23 +4,29 @@
 
         <!-- Page Heading -->
         <div class="row">
-            <div class="col-lg-12">
-                <h1>{{ dashboard.period.name }}</h1>
-                <br>
+            <div class="col-lg-3">
+                <span style="padding: 0px; font-size: 38px;">{{ dashboard.period.name }}</span>
+            </div>
+            <div class="col-lg-4">
+                <ul class="nav nav-pills">
+                    <li role="presentation" class="active"><a id="general_button" href="#">General</a></li>
+                    <li role="presentation"><a id="calendar_button" href="#">Calendar</a></li>
+                    <li role="presentation"><a id="expenses_button" href="#">Expenses</a></li>
+                </ul>
             </div>
         </div>
 
-        <!-- Page body -->
         <div class="row">
+            <hr>
+        </div>
 
-            <!-- First Column-->
-            <div class="col-lg-2">
-
+        <div id="general_page" class="row">
+            <div class="col-lg-3">
                 <!-- Income -->
-                <div class="panel panel-default">
+                <div class="panel panel-default general_page_card">
                     <div class="panel-body">
                         <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>Income</h3>
-                        
+                        <br>
                         <div>
                             <table class="table">
                                 <tr>
@@ -37,9 +43,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-lg-3">
 
                 <!-- Bills -->
-                <div class="panel panel-default">
+                <div class="panel panel-default general_page_card">
                     <div class="panel-body">
                         <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>Bills</h3>
                         <br>
@@ -80,10 +89,11 @@
                         </table>
                     </div>
                 </div>
+            </div>
 
-
+            <div class="col-lg-3">
                 <!-- Budgets -->
-                <div class="panel panel-default">
+                <div class="panel panel-default general_page_card">
                     <div class="panel-body">
                         <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>Budgets</h3>
                         <br>
@@ -127,9 +137,9 @@
             </div>
 
             <!-- Second Column-->
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                 <!-- Income -->
-                <div class="panel panel-default">
+                <div class="panel panel-default general_page_card">
                     <div class="panel-body">
                         <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>Statistics</h3>
                         <br>
@@ -156,14 +166,12 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-
-            <!-- Third Column -->
-            <div class="col-lg-8">
+        <div id="calendar_page" class="row hidden">
+            <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>Expenses  <i class="fa fa-refresh fa-2 clickable"></i></h3>
-                        <br>
                         <div>
                             <table class="table table-bordered table-hover table-striped">
                                 <tr style="border-bottom: 2px solid gray">
@@ -175,14 +183,14 @@
                                     <th style="border-left: 2px solid gray">Totals</th>
                                 </tr>
                                 {% for date, row in expense_table.items %}
-                                <tr>
-                                    <th style="border-right: 2px solid black"><span style="float:right">{{ row.name }}</span></th>
-                                    <td>0.00</td>
-                                    <td>0.00</td>
-                                    <td>0.00</td>
-                                    <td>0.00</td>
-                                    <th style="border-left: 2px solid black;">0.00</th>
-                                </tr>
+                                    <tr>
+                                        <th style="border-right: 2px solid black"><span style="float:right">{{ row.name }}</span></th>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <th style="border-left: 2px solid black;">0.00</th>
+                                    </tr>
                                 {% endfor %}
                                 <tr style="border-top: 2px solid gray">
                                     <th style="border-right: 2px solid black">Totals</th>
@@ -215,6 +223,10 @@
             </div>
 
         </div>
+
+        <div id="expenses_page" class="row hidden">
+            <h1>expense table goes here</h1>
+        </div
     </div>
 </div>
 

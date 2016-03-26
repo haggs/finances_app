@@ -56,7 +56,7 @@ class UserProfile(models.Model):
 
 
 class Dashboard(models.Model):
-    profile = models.ForeignKey(UserProfile)
+    profile = models.ForeignKey(UserProfile, null=True)
     period = models.ForeignKey(Period)
     net_income = models.FloatField(null=True)
     net_hourly_pay = models.FloatField(default=0.0)
