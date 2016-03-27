@@ -1,52 +1,105 @@
 {% include 'shared/header.html' %}
-<div id="page-wrapper">
-    <div class="container-fluid">
-        <!-- /.row -->
+<div>
+    <div class="container-fluid main-container">
+
+        <!-- Page Heading -->
         <div class="row">
-            <div class="col-lg-12">
-                <div class="row">
-                    <div class="panel panel-default">
+            <div class="col-lg-8">
+                <span style="padding: 0px; font-size: 38px;">Preferences: {{ profile.account.get_full_name }}</span>
+            </div>
+            <div class="col-lg-4">
+                <span id="apply_changes" class="hidden">
+                    <span>You've made changes to your preferences</span>
+                    <a href="/preferences" class="btn btn-default">Cancel</a>
+                    <button id="apply_button" type="button" class="btn btn-primary">Apply</button>
+                </span>
+            </div>
+        </div>
 
-                        <div class="panel-body">
-                            <h1>
-                                <small>Preferences: {{ profile.account.get_full_name }}</small>
-                            </h1>
-                        </div>
+        <div class="row">
+            <hr>
+        </div>
 
-                        <div class="panel-body">
-                            <div class="col-lg-3" >
-                                <div class="panel panel-default">
-                                    <div class="panel-body text-center">
-                                        <h3 class="panel-title"><i class="fa fa-pie-chart fa-fw"></i> Default Bills</h3>
+        <div id="general_page" class="row">
+
+            <!--General-->
+            <div class="col-lg-4" >
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>General</h3>
+                        <br>
+                        <table id="default_bills_table" class="table table-bordered">
+                            <tr>
+                                <th>Income Type</th>
+                                <td style="width: 50%;">
+                                    <select id="income_type" class="form-control">
+                                        {% for type in income_types %}
+                                        <option {% if type.id == profile.income_type_id %} selected {% endif %} value="{{ type.id }}">{{ type.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr id="hourly_fields" {% if profile.income_type.name != 'Hourly' %} class="hidden" {% endif %}>
+                                <th>Hourly Income</th>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span>
+                                        <input id="hourly_income_amount" type="text" class="form-control" value="{{ profile.hourly_income|floatformat:2 }}">
                                     </div>
-                                    <div class="panel-body">
-                                        <table id="default_bills_table" class="table table-bordered">
-                                            {% for category in profile.default_categories.all %}{% if category.is_bill %}
-                                                <tr id="bill_{{ category.id }}">
-                                                    <th>{{ category.name }}<i id="delete_default_bill_{{ category.id }}" class="fa fa-trash fa-2 clickable"></i></th>
-                                                </tr>
-                                            {% endif %}{% endfor %}
-
-
-                                        </table>
-                                        <select id="add_default_bill" class="form-control">
-                                            <option value="0" selected>+ Add Default Bill</option>
-                                            {% for bill in bills %} {% if bill not in profile.default_categories.all%}
-                                                <option value="{{ bill.id }}">{{ bill.name }}</option>
-                                            {% endif %}{% endfor %}
-                                        </select>
+                                </td>
+                            </tr>
+                            <tr id="salary_fields" {% if profile.income_type.name != 'Salary' %} class="hidden" {% endif %}>
+                                <th>Monthly Income</th>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span>
+                                        <input id="monthly_income_amount" type="text" class="form-control" value="{{ profile.monthly_income|floatformat:2 }}">
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
+            <!--Default Bills-->
+            <div class="col-lg-3" >
+                <div class="panel panel-default">
+                    <div class="panel-body text-center">
+                        <h3 class="panel-title"><i class="fa fa-pie-chart fa-fw"></i> Default Bills</h3>
+                        <br>
+                        <table id="default_bills_table" class="table table-bordered">
+                            {% for bill in bills %}
+                                <tr id="bill_{{ bill.id }}">
+                                    <th>{{ bill.name }}</th>
+                                    <th style="width:10%;"><i id="delete_default_bill_{{ bill.id }}" class="fa fa-trash fa-2 clickable"></i></th>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!--Default Budgets-->
+            <div class="col-lg-3" >
+                <div class="panel panel-default">
+                    <div class="panel-body text-center">
+                        <h3 class="panel-title"><i class="fa fa-pie-chart fa-fw"></i> Default Budgets</h3>
+                        <br>
+                        <table id="default_bills_table" class="table table-bordered">
+                            {% for budget in budgets %}
+                                <tr id="budget_{{ budget.id }}">
+                                    <th>{{ budget.name }}</th>
+                                    <th style="width:10%;"><i id="delete_default_budget_{{ budget.id }}" class="fa fa-trash fa-2 clickable"></i></th>
+                                </tr>
+                            {% endfor %}
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
+
+
     </div>
-    <!-- /.container-fluid -->
-</div>
-<!-- /#page-wrapper -->
 </div>
 {% include 'shared/footer.html' %}

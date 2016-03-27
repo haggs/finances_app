@@ -23,6 +23,73 @@ $(function () {
 $( document ).ready(function(){
 
 
+    //Preferences Page
+    $('body').on('change', '#income_type', function(){
+        var id = $('#income_type option:selected').val();
+        var name = $('#income_type option:selected').html();
+
+        if(name == "Hourly"){
+            $('#salary_fields').addClass('hidden');
+            $('#hourly_fields').removeClass('hidden');
+        } else {
+            $('#hourly_fields').addClass('hidden');
+            $('#salary_fields').removeClass('hidden');
+        }
+
+        $('#apply_changes').removeClass('hidden');
+    });
+
+    $('body').on('input', "[id$='_income_amount']", function(){
+        $('#apply_changes').removeClass('hidden');
+    });
+
+    $('body').on('click', '#apply_button', function(){
+        var income_type_id = $('#income_type option:selected').val();
+        var income_type_name = $('#income_type option:selected').html();
+        var hourly_income = parseFloat($('#hourly_income_amount').val());
+        var monthly_income = parseFloat($('#monthly_income_amount').val());
+
+        var data = {
+            action: "apply_changes",
+            income_type_id: income_type_id
+        };
+
+        if(income_type_name == "Hourly"){
+            if(hourly_income != NaN){
+                data.hourly_income = hourly_income;
+            } else {
+                toastr.error("Hourly income must be a number");
+                return;
+            }
+        } else {
+            if(monthly_income != NaN){
+                data.monthly_income = monthly_income;
+            } else {
+                toastr.error("Monthly income must be a number");
+                return;
+            }
+        }
+
+        $.ajax({
+            url: "/preferences/",
+            type: "POST",
+            data: data,
+            success: function(data, textStatus, jqXHR){
+                toastr.success('Updated preferences');
+                $('#hourly_income_amount').val(hourly_income.toFixed(2));
+                $('#monthly_income_amount').val(monthly_income.toFixed(2));
+                $('#apply_changes').addClass('hidden');
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error("Error Updating Preferences")
+            }
+        });
+
+    });
+
+    //End Preferences Page
+
+
     $('body').on('click', '#general_button', function(){
         $('.active').removeClass('active');
         $(this).parent().addClass('active');

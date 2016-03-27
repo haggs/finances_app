@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models import Sum
 from datetime import datetime, timedelta
-from .models import Expense, Period, UserProfile, Category, Budget
+from .models import Expense, Period, UserProfile, Category, Budget, IncomeType
 from .helpers import get_period, get_dashboard
 
 
@@ -70,6 +70,15 @@ def view_preferences(request):
     if request.method == 'POST':
         if 'action' not in request.POST:
             return JsonResponse({'success': True})
+        if request.POST['action'] == 'apply_changes':
+            income_type = IncomeType.objects.get(id=request.POST['income_type_id'])
+            profile.income_type = income_type
+            if income_type.name == "Hourly":
+                profile.hourly_income = float(request.POST['hourly_income'])
+            else:
+                profile.monthly_income = float(request.POST['monthly_income'])
+            profile.save()
+            return JsonResponse({'success': True})
         if request.POST['action'] == 'delete_default_bill':
             bill = Category.objects.get(id=request.POST['id'])
             profile.default_categories.remove(bill)
@@ -81,7 +90,10 @@ def view_preferences(request):
 
     data = {
         'profile': profile,
-        'bills': Category.objects.filter(is_bill=True).order_by('id'),
+        'bills': Category.objects.filter(profile=profile, is_default=True, is_bill=True).order_by('name'),
+        'budgets': Category.objects.filter(profile=profile, is_default=True, is_bill=False).order_by('name'),
+        'income_types': IncomeType.objects.all(),
+        'periods': Period.objects.order_by('-start_date'),
     }
 
     return render(request, 'finances/preferences.html', data)
