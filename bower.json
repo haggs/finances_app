@@ -1,0 +1,25 @@
+{
+  "name": "finances_app",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Dan Haggerty <daniel.r.haggerty@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/haggs/finances_app",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "font-awesome": "^4.5.0",
+    "datatables": "^1.10.11",
+    "jquery-ui": "^1.11.4",
+    "toastr": "^2.1.2"
+  }
+}

@@ -19,10 +19,20 @@ import views
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import login, logout
-from views import home, view_dashboard, view_preferences
+from views import (
+    home,
+    view_dashboard,
+    view_preferences,
+    search_default_bill,
+    add_category,
+    remove_default_bill
+)
 
 urlpatterns = [
     url(r'^$', home),
     url(r'(?P<period_id>\d+)/$', view_dashboard),
     url(r'^preferences/$', view_preferences),
+    url(r'^api/v1/search_default_bill/$', search_default_bill),
+    url(r'^api/v1/add_category/$', add_category),
+    url(r'^api/v1/remove_default_bill/$', remove_default_bill),
 ]

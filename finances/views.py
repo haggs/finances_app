@@ -1,13 +1,12 @@
 from django.shortcuts import render
-from django.contrib.auth import login
-from django.http import HttpResponseRedirect, JsonResponse
-from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from datetime import datetime, timedelta
 from .models import Expense, Period, UserProfile, Category, Budget, IncomeType
 from .helpers import get_period, get_dashboard
+from json import dumps
 
 
 @login_required
@@ -15,6 +14,7 @@ def home(request):
     now = datetime.now()
     period = get_period(now)
     return HttpResponseRedirect('/' + str(period.id) + '/')
+
 
 @login_required
 def view_dashboard(request, period_id=None):
@@ -104,3 +104,63 @@ def add_expense(request):
     return HttpResponseRedirect('/')
 
 
+@login_required
+def search_default_bill(request):
+    profile = UserProfile.objects.get(account=request.user)
+    bills = Category.objects.filter(profile=profile,
+                                    is_bill=True,
+                                    is_default=False,
+                                    name__contains=request.GET['term']
+                                   )
+
+    values = []
+    for bill in bills:
+        values.append({
+            'id': bill.id,
+            'label': bill.name,
+            'name': bill.name
+        })
+
+    test_name = Category.objects.filter(name=request.GET['term'])
+
+    if request.GET['term'].replace(" ", "") != "" and not test_name.exists():
+        values.append({
+            'id': 0,
+            'label': "Create new bill:  " + request.GET['term'],
+            'name': "Create new bill:  " + request.GET['term'],
+        })
+
+    return HttpResponse(dumps(values), 'application/json')
+
+
+@login_required
+def add_category(request):
+    cat_id = int(request.POST.get('id', 0))
+    is_bill = int(request.POST.get('is_bill', 0))
+    is_default = int(request.POST.get('is_default', 0))
+    name = request.POST.get('name', 'New category')
+
+    profile = UserProfile.objects.get(account=request.user)
+
+    cat = Category.objects.filter(Q(profile=profile) & (Q(id=cat_id) | Q(name=name)))
+
+    if cat.exists():
+        cat = cat.get()
+        if cat.is_default == is_default and cat.is_bill == is_bill:
+            return JsonResponse({'success': 0})
+    else:
+        cat = Category(profile=profile, name=name)
+
+    cat.is_bill = is_bill
+    cat.is_default = is_default
+    cat.save()
+    return JsonResponse({'success': 1, 'id': cat.id, 'name': cat.name})
+
+
+@login_required
+def remove_default_bill(request):
+    profile = UserProfile.objects.get(account=request.user)
+    bill = Category.objects.get(profile=profile, id=request.POST['id'])
+    bill.is_default = False
+    bill.save()
+    return JsonResponse({'success': 1})

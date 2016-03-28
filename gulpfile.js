@@ -15,14 +15,15 @@ var css_dir = static_dir + "css/";
 var js_dir = static_dir + "js/";
 var css_build_dir = css_dir + "build/";
 var js_build_dir = js_dir + "build/";
-var node_modules_dir = "node_modules/";
+var bower_components_dir = "bower_components/";
 
 
 gulp.task('build_vendor_js', function(){
-    gulp.src([ node_modules_dir + "jquery/dist/jquery.js",
-               node_modules_dir + "bootstrap/dist/js/bootstrap.js",
-               node_modules_dir + "datatables/media/js/jquery.dataTables.js",
-               node_modules_dir + "toastr/build/toastr.min.js"
+    gulp.src([ bower_components_dir + "jquery/dist/jquery.js",
+               bower_components_dir + "jquery-ui/jquery-ui.js",
+               bower_components_dir + "bootstrap/dist/js/bootstrap.js",
+               bower_components_dir + "datatables/media/js/jquery.dataTables.js",
+               bower_components_dir + "toastr/toastr.js"
       ]).pipe(print())
         .pipe(concat('vendor.js'))
         .pipe(gulp.dest(js_build_dir));
@@ -30,10 +31,11 @@ gulp.task('build_vendor_js', function(){
 
 
 gulp.task('build_vendor_css', function(){
-    gulp.src([ node_modules_dir + "bootstrap/dist/css/bootstrap.css",
-               node_modules_dir + "datatables/media/css/jquery.dataTables.css",
-               node_modules_dir + "font-awesome/css/font-awesome.css",
-               node_modules_dir + "toastr/build/toastr.css"
+    gulp.src([ bower_components_dir + "bootstrap/dist/css/bootstrap.css",
+               bower_components_dir + "jquery-ui/themes/base/jquery-ui.css",
+               bower_components_dir + "datatables/media/css/jquery.dataTables.css",
+               bower_components_dir + "font-awesome/css/font-awesome.css",
+               bower_components_dir + "toastr/toastr.css"
       ]).pipe(print())
         .pipe(concat('vendor.css'))
         .pipe(gulp.dest(css_build_dir));

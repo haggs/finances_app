@@ -84,12 +84,68 @@ $( document ).ready(function(){
                 toastr.error("Error Updating Preferences")
             }
         });
+    });
 
+    $('#add_default_bill').autocomplete({
+        source: '/api/v1/search_default_bill/',
+        minLength: 0,
+        select: function(event, ui){
+            var name = $('#add_default_bill').val()
+            $.ajax({
+                url: '/api/v1/add_category/',
+                type: 'POST',
+                data: {
+                    id: ui.item.id,
+                    is_bill: 1,
+                    is_default: 1,
+                    name: name
+                },
+                success: function(data, textStatus, jqXHR){
+                    if(data.success){
+                        $('#default_bills_table tr:last').before(
+                            '<tr id="bill_' + data.id + '">' +
+                                '<th>' + data.name + '</th>' +
+                                '<th style="width:10%;">' +
+                                    '<i id="delete_default_bill_' + data.id + '" class="fa fa-trash fa-2 clickable"></i>' +
+                                '</th>' +
+                            '</tr>'
+                        );
+                        toastr.success("Added default bill");
+                    } else {
+                        toastr.error(name + " is already a default bill");
+                    }
+                    $('#add_default_bill').val("");
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    $('#add_default_bill').val("");
+                    toastr.error("Error adding default bill");
+                }
+            });
+        }
+    });
+
+    $('body').on('click', 'i[id^=delete_default_bill]', function(){
+        var element = $(this);
+        var id = $(this).attr('id');
+        id = id.substring(id.lastIndexOf("_")+1);
+
+        $.ajax({
+            url: "/api/v1/remove_default_bill/",
+            type: "POST",
+            data: {id: id},
+            success: function(data, textStatus, jqXHR){
+                $('#bill_' + id).remove();
+                toastr.success("Removed default bill");
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                toastr.error("Error removing default bill");
+            }
+        });
     });
 
     //End Preferences Page
 
-
+    //Dashboard Page
     $('body').on('click', '#general_button', function(){
         $('.active').removeClass('active');
         $(this).parent().addClass('active');
@@ -115,54 +171,7 @@ $( document ).ready(function(){
         $('#calendar_page').addClass('hidden');
         $('#general_page').addClass('hidden');
     });
-
-    $('body').on('click', 'i[id^=delete_default_bill]', function(){
-        var element = $(this);
-        var id = $(this).attr('id');
-        id = id.substring(id.lastIndexOf("_")+1);
-
-        $.ajax({
-            url: "/preferences/",
-            type: "POST",
-            data: {action: 'delete_default_bill', id: id},
-            success: function(data, textStatus, jqXHR){
-                $('#bill_' + id).remove();
-                $('#add_default_bill').append(
-                    '<option value="' + id +'">' + element.parent().text() + '</option>'
-                );
-            },
-            error: function(jqXHR, textStatus, errorThrown){
-                toastr.error("Error removing default bill")
-            }
-        });
-    });
-
-    $('body').on('change', '#add_default_bill', function(){
-        var selected = $(this).find(":selected");
-        var id = selected.val();
-
-        if(id == 0){
-            return;
-        }
-
-        var name = selected.text();
-
-        $.ajax({
-            url: "/preferences/",
-            type: "POST",
-            data: {action: 'add_default_bill', id: id},
-            success: function(data, textStatus, jqXHR){
-                $('#default_bills_table').append(
-                    '<tr id="bill_' + id + '"> <th>' + name + '<i id="delete_default_bill_' + id + '" class="fa fa-trash fa-2 trash"></i></th></tr>'
-                );
-                selected.remove();
-            },
-            error: function(jqXHR, textStatus, errorThrown){
-                toastr.error("Error adding default bill")
-            }
-        });
-
-    });
+    //End Dashboard Page
 
 
     $('#new_expense').click(function(){

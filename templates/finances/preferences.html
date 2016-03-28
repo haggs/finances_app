@@ -28,7 +28,7 @@
                     <div class="panel-body">
                         <h3 class="panel-title text-center"><i class="fa fa-pie-chart fa-fw"></i>General</h3>
                         <br>
-                        <table id="default_bills_table" class="table table-bordered">
+                        <table class="table table-bordered">
                             <tr>
                                 <th>Income Type</th>
                                 <td style="width: 50%;">
@@ -75,6 +75,11 @@
                                     <th style="width:10%;"><i id="delete_default_bill_{{ bill.id }}" class="fa fa-trash fa-2 clickable"></i></th>
                                 </tr>
                             {% endfor %}
+                            <tr>
+                                <td colspan="2">
+                                    <input id="add_default_bill" type="text" class="form-control input-sm" placeholder="Add Default Bill">
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>
