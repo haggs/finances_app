@@ -57,7 +57,7 @@ def view_dashboard(request, period_id=None):
             'total_bills': bills.aggregate(Sum('amount')).get('amount__sum'),
             'total_budgets': budgets.aggregate(Sum('amount')).get('amount_sum'),
             'expense_table': expense_table
-           }
+            }
 
     return render(request, 'finances/dashboard.html', data)
 
@@ -79,19 +79,11 @@ def view_preferences(request):
                 profile.monthly_income = float(request.POST['monthly_income'])
             profile.save()
             return JsonResponse({'success': True})
-        if request.POST['action'] == 'delete_default_bill':
-            bill = Category.objects.get(id=request.POST['id'])
-            profile.default_categories.remove(bill)
-            return JsonResponse({'success': True})
-        if request.POST['action'] == 'add_default_bill':
-            bill = Category.objects.get(id=request.POST['id'])
-            profile.default_categories.add(bill)
-            return JsonResponse({'success': True})
 
     data = {
         'profile': profile,
-        'bills': Category.objects.filter(profile=profile, is_default=True, is_bill=True).order_by('name'),
-        'budgets': Category.objects.filter(profile=profile, is_default=True, is_bill=False).order_by('name'),
+        'bills': Category.objects.filter(profile=profile, is_default=True, is_bill=True).order_by('name').order_by('last_updated'),
+        'budgets': Category.objects.filter(profile=profile, is_default=True, is_bill=False).order_by('name').order_by('last_updated'),
         'income_types': IncomeType.objects.all(),
         'periods': Period.objects.order_by('-start_date'),
     }
@@ -111,8 +103,7 @@ def search_default_bill(request):
                                     is_bill=True,
                                     is_default=False,
                                     name__contains=request.GET['term']
-                                   )
-
+                                    )
     values = []
     for bill in bills:
         values.append({
@@ -121,7 +112,7 @@ def search_default_bill(request):
             'name': bill.name
         })
 
-    test_name = Category.objects.filter(name=request.GET['term'])
+    test_name = Category.objects.filter(name=request.GET['term'], is_bill=True)
 
     if request.GET['term'].replace(" ", "") != "" and not test_name.exists():
         values.append({
@@ -129,7 +120,33 @@ def search_default_bill(request):
             'label': "Create new bill:  " + request.GET['term'],
             'name': "Create new bill:  " + request.GET['term'],
         })
+    return HttpResponse(dumps(values), 'application/json')
 
+
+@login_required
+def search_default_budget(request):
+    profile = UserProfile.objects.get(account=request.user)
+    budgets = Category.objects.filter(profile=profile,
+                                      is_bill=False,
+                                      is_default=False,
+                                      name__contains=request.GET['term']
+                                      )
+    values = []
+    for budget in budgets:
+        values.append({
+            'id': budget.id,
+            'label': budget.name,
+            'name': budget.name
+        })
+
+    test_name = Category.objects.filter(name=request.GET['term'], is_bill=False)
+
+    if request.GET['term'].replace(" ", "") != "" and not test_name.exists():
+        values.append({
+            'id': 0,
+            'label': "Create new budget:  " + request.GET['term'],
+            'name': "Create new budget:  " + request.GET['term'],
+        })
     return HttpResponse(dumps(values), 'application/json')
 
 
@@ -158,9 +175,9 @@ def add_category(request):
 
 
 @login_required
-def remove_default_bill(request):
+def remove_default_category(request):
     profile = UserProfile.objects.get(account=request.user)
-    bill = Category.objects.get(profile=profile, id=request.POST['id'])
-    bill.is_default = False
-    bill.save()
+    category = Category.objects.get(profile=profile, id=request.POST['id'])
+    category.is_default = False
+    category.save()
     return JsonResponse({'success': 1})

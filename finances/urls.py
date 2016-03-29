@@ -24,8 +24,9 @@ from views import (
     view_dashboard,
     view_preferences,
     search_default_bill,
+    search_default_budget,
     add_category,
-    remove_default_bill
+    remove_default_category
 )
 
 urlpatterns = [
@@ -33,6 +34,7 @@ urlpatterns = [
     url(r'(?P<period_id>\d+)/$', view_dashboard),
     url(r'^preferences/$', view_preferences),
     url(r'^api/v1/search_default_bill/$', search_default_bill),
+    url(r'^api/v1/search_default_budget/$', search_default_budget),
     url(r'^api/v1/add_category/$', add_category),
-    url(r'^api/v1/remove_default_bill/$', remove_default_bill),
+    url(r'^api/v1/remove_default_category/$', remove_default_category),
 ]

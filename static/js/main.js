@@ -103,10 +103,10 @@ $( document ).ready(function(){
                 success: function(data, textStatus, jqXHR){
                     if(data.success){
                         $('#default_bills_table tr:last').before(
-                            '<tr id="bill_' + data.id + '">' +
+                            '<tr id="category_' + data.id + '">' +
                                 '<th>' + data.name + '</th>' +
                                 '<th style="width:10%;">' +
-                                    '<i id="delete_default_bill_' + data.id + '" class="fa fa-trash fa-2 clickable"></i>' +
+                                    '<i id="delete_default_category_' + data.id + '" class="fa fa-trash fa-2 clickable"></i>' +
                                 '</th>' +
                             '</tr>'
                         );
@@ -124,25 +124,62 @@ $( document ).ready(function(){
         }
     });
 
-    $('body').on('click', 'i[id^=delete_default_bill]', function(){
+    $('#add_default_budget').autocomplete({
+        source: '/api/v1/search_default_budget/',
+        minLength: 0,
+        select: function(event, ui){
+            var name = $('#add_default_budget').val()
+            $.ajax({
+                url: '/api/v1/add_category/',
+                type: 'POST',
+                data: {
+                    id: ui.item.id,
+                    is_bill: 0,
+                    is_default: 1,
+                    name: name
+                },
+                success: function(data, textStatus, jqXHR){
+                    if(data.success){
+                        $('#default_budgets_table tr:last').before(
+                            '<tr id="category_' + data.id + '">' +
+                                '<th>' + data.name + '</th>' +
+                                '<th style="width:10%;">' +
+                                    '<i id="delete_default_category_' + data.id + '" class="fa fa-trash fa-2 clickable"></i>' +
+                                '</th>' +
+                            '</tr>'
+                        );
+                        toastr.success("Added default budget");
+                    } else {
+                        toastr.error(name + " is already a default budget");
+                    }
+                    $('#add_default_budget').val("");
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    $('#add_default_bill').val("");
+                    toastr.error("Error adding default bill");
+                }
+            });
+        }
+    });
+
+    $('body').on('click', 'i[id^=delete_default_category]', function(){
         var element = $(this);
         var id = $(this).attr('id');
         id = id.substring(id.lastIndexOf("_")+1);
 
         $.ajax({
-            url: "/api/v1/remove_default_bill/",
+            url: "/api/v1/remove_default_category/",
             type: "POST",
             data: {id: id},
             success: function(data, textStatus, jqXHR){
-                $('#bill_' + id).remove();
-                toastr.success("Removed default bill");
+                $('#category_' + id).fadeOut().remove();
+                toastr.success("Removed default category");
             },
             error: function(jqXHR, textStatus, errorThrown){
-                toastr.error("Error removing default bill");
+                toastr.error("Error removing default category");
             }
         });
     });
-
     //End Preferences Page
 
     //Dashboard Page

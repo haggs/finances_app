@@ -70,9 +70,9 @@
                         <br>
                         <table id="default_bills_table" class="table table-bordered">
                             {% for bill in bills %}
-                                <tr id="bill_{{ bill.id }}">
+                                <tr id="category_{{ bill.id }}">
                                     <th>{{ bill.name }}</th>
-                                    <th style="width:10%;"><i id="delete_default_bill_{{ bill.id }}" class="fa fa-trash fa-2 clickable"></i></th>
+                                    <th style="width:10%;"><i id="delete_default_category_{{ bill.id }}" class="fa fa-trash fa-2 clickable"></i></th>
                                 </tr>
                             {% endfor %}
                             <tr>
@@ -91,13 +91,18 @@
                     <div class="panel-body text-center">
                         <h3 class="panel-title"><i class="fa fa-pie-chart fa-fw"></i> Default Budgets</h3>
                         <br>
-                        <table id="default_bills_table" class="table table-bordered">
+                        <table id="default_budgets_table" class="table table-bordered">
                             {% for budget in budgets %}
-                                <tr id="budget_{{ budget.id }}">
+                                <tr id="category_{{ budget.id }}">
                                     <th>{{ budget.name }}</th>
-                                    <th style="width:10%;"><i id="delete_default_budget_{{ budget.id }}" class="fa fa-trash fa-2 clickable"></i></th>
+                                    <th style="width:10%;"><i id="delete_default_category_{{ budget.id }}" class="fa fa-trash fa-2 clickable"></i></th>
                                 </tr>
                             {% endfor %}
+                            <tr>
+                                <td colspan="2">
+                                    <input id="add_default_budget" type="text" class="form-control input-sm" placeholder="Add Default Budget">
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>

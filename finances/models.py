@@ -77,6 +77,8 @@ class Category(models.Model):
     is_default = models.BooleanField(default=False)
     is_default_new_expense = models.BooleanField(default=False)
     profile = models.ForeignKey(UserProfile, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
